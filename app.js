@@ -1,6 +1,8 @@
 const navLinks = Array.from(document.querySelectorAll(".nav-links a"));
 const menuToggle = document.querySelector(".menu-toggle");
 const navMenu = document.getElementById("primary-menu");
+const menuOverlay = document.querySelector(".menu-overlay");
+const menuClose = document.querySelector(".menu-close");
 const sectionIds = navLinks
   .map((link) => link.getAttribute("href"))
   .filter((href) => href && href.startsWith("#"))
@@ -42,6 +44,14 @@ navLinks.forEach((link) => {
 menuToggle?.addEventListener("click", () => {
   const isOpen = menuToggle.getAttribute("aria-expanded") === "true";
   setMenuOpen(!isOpen);
+});
+
+menuOverlay?.addEventListener("click", () => {
+  setMenuOpen(false);
+});
+
+menuClose?.addEventListener("click", () => {
+  setMenuOpen(false);
 });
 
 document.addEventListener("keydown", (event) => {
