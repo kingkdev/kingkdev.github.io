@@ -943,12 +943,78 @@ body::after {
   border: 1px solid rgba(255, 255, 255, 0.08);
   background: rgba(0, 0, 0, 0.18);
   box-shadow: 0 16px 34px rgba(0, 0, 0, 0.22);
+  padding: 0;
+  cursor: zoom-in;
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.project-card-media:hover,
+.project-card-media:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 22px 42px rgba(0, 0, 0, 0.28);
 }
 
 .project-card-media img {
   display: block;
   width: 100%;
   height: auto;
+}
+
+.project-lightbox {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease;
+  z-index: 220;
+}
+
+body.project-lightbox-open {
+  overflow: hidden;
+}
+
+body.project-lightbox-open .project-lightbox {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.project-lightbox-backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(0, 0, 0, 0.82);
+}
+
+.project-lightbox-dialog {
+  position: relative;
+  width: min(92vw, 1100px);
+  max-height: 88vh;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(6, 7, 9, 0.96);
+  box-shadow: 0 34px 72px rgba(0, 0, 0, 0.42);
+}
+
+.project-lightbox-image {
+  display: block;
+  width: 100%;
+  max-height: calc(88vh - 40px);
+  object-fit: contain;
+}
+
+.project-lightbox-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  min-width: 42px;
+  min-height: 42px;
+  border: 0;
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
 }
 
 .project-card:hover {

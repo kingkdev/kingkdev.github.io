@@ -3,6 +3,11 @@ const menuToggle = document.querySelector(".menu-toggle");
 const navMenu = document.getElementById("primary-menu");
 const menuOverlay = document.querySelector(".menu-overlay");
 const menuClose = document.querySelector(".menu-close");
+const projectPreviewButtons = Array.from(document.querySelectorAll("[data-project-preview]"));
+const projectLightbox = document.querySelector(".project-lightbox");
+const projectLightboxImage = document.querySelector(".project-lightbox-image");
+const projectLightboxBackdrop = document.querySelector(".project-lightbox-backdrop");
+const projectLightboxClose = document.querySelector(".project-lightbox-close");
 const sectionIds = navLinks
   .map((link) => link.getAttribute("href"))
   .filter((href) => href && href.startsWith("#"))
@@ -28,6 +33,21 @@ function setActiveLink(id) {
 function setMenuOpen(isOpen) {
   document.body.classList.toggle("nav-open", isOpen);
   menuToggle?.setAttribute("aria-expanded", String(isOpen));
+}
+
+function setProjectLightboxOpen(isOpen, src = "", alt = "") {
+  document.body.classList.toggle("project-lightbox-open", isOpen);
+  projectLightbox?.setAttribute("aria-hidden", String(!isOpen));
+
+  if (projectLightboxImage && isOpen) {
+    projectLightboxImage.src = src;
+    projectLightboxImage.alt = alt;
+  }
+
+  if (projectLightboxImage && !isOpen) {
+    projectLightboxImage.src = "";
+    projectLightboxImage.alt = "";
+  }
 }
 
 navLinks.forEach((link) => {
@@ -57,7 +77,29 @@ menuClose?.addEventListener("click", () => {
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
     setMenuOpen(false);
+    setProjectLightboxOpen(false);
   }
+});
+
+projectPreviewButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    const src = button.dataset.projectPreview;
+    const alt = button.dataset.projectAlt ?? "";
+
+    if (!src) {
+      return;
+    }
+
+    setProjectLightboxOpen(true, src, alt);
+  });
+});
+
+projectLightboxBackdrop?.addEventListener("click", () => {
+  setProjectLightboxOpen(false);
+});
+
+projectLightboxClose?.addEventListener("click", () => {
+  setProjectLightboxOpen(false);
 });
 
 const observer = new IntersectionObserver(
