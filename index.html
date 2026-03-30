@@ -225,18 +225,18 @@
 
           <div class="project-grid" aria-label="Selected projects">
             <article class="project-card project-card-featured">
-              <div class="project-card-media">
+              <button class="project-card-media" type="button" data-project-preview="./project-studio-noir.png" data-project-alt="Studio Noir project preview on a laptop screen">
                 <img src="./project-studio-noir.png" alt="Studio Noir project preview on a laptop screen">
-              </div>
+              </button>
               <p class="project-card-tag">Photography Portfolio</p>
               <h3>Studio Noir</h3>
               <p>A black-and-white photography portfolio concept designed with strong contrast, oversized type, and an editorial grid that gives the work a dramatic gallery-style presence.</p>
             </article>
 
             <article class="project-card">
-              <div class="project-card-media">
+              <button class="project-card-media" type="button" data-project-preview="./project-atlanta-legacy.png" data-project-alt="Atlanta Legacy Properties project preview on a laptop screen">
                 <img src="./project-atlanta-legacy.png" alt="Atlanta Legacy Properties project preview on a laptop screen">
-              </div>
+              </button>
               <p class="project-card-tag">Luxury Real Estate</p>
               <h3>Atlanta Legacy Properties</h3>
               <p>A luxury property landing page concept built with spacious composition, refined typography, and focused content panels that guide attention through featured homes and elevated brand messaging.</p>
@@ -328,6 +328,13 @@
         </div>
       </footer>
     </main>
+    <div class="project-lightbox" aria-hidden="true">
+      <button class="project-lightbox-backdrop" type="button" aria-label="Close project preview"></button>
+      <div class="project-lightbox-dialog" role="dialog" aria-modal="true" aria-label="Expanded project preview">
+        <button class="project-lightbox-close" type="button" aria-label="Close project preview">Close</button>
+        <img class="project-lightbox-image" src="" alt="">
+      </div>
+    </div>
   </div>
   <script src="./app.js"></script>
 </body>
