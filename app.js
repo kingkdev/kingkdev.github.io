@@ -1,4 +1,6 @@
 const navLinks = Array.from(document.querySelectorAll(".nav-links a"));
+const menuToggle = document.querySelector(".menu-toggle");
+const navMenu = document.getElementById("primary-menu");
 const sectionIds = navLinks
   .map((link) => link.getAttribute("href"))
   .filter((href) => href && href.startsWith("#"))
@@ -21,13 +23,31 @@ function setActiveLink(id) {
   });
 }
 
+function setMenuOpen(isOpen) {
+  document.body.classList.toggle("nav-open", isOpen);
+  menuToggle?.setAttribute("aria-expanded", String(isOpen));
+}
+
 navLinks.forEach((link) => {
   link.addEventListener("click", () => {
     const targetId = link.getAttribute("href")?.slice(1);
     if (targetId) {
       setActiveLink(targetId);
     }
+
+    setMenuOpen(false);
   });
+});
+
+menuToggle?.addEventListener("click", () => {
+  const isOpen = menuToggle.getAttribute("aria-expanded") === "true";
+  setMenuOpen(!isOpen);
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    setMenuOpen(false);
+  }
 });
 
 const observer = new IntersectionObserver(
