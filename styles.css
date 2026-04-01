@@ -8,6 +8,13 @@
   --accent-deep: #2f8500;
   --ink: #0a0710;
   --glow: rgba(75, 210, 0, 0.24);
+  --hero-shift-x: 0px;
+  --hero-shift-y: 0px;
+  --hero-tilt-x: 0deg;
+  --hero-tilt-y: 0deg;
+  --hero-scale: 1;
+  --hero-brightness: 1;
+  --hero-saturate: 1;
 }
 
 * {
@@ -126,7 +133,6 @@ body::after {
 }
 
 .brand-text {
-  font-family: "Outfit", sans-serif;
   font-size: 2.1rem;
   letter-spacing: -0.08em;
   font-weight: 800;
@@ -255,18 +261,33 @@ body::after {
   padding: 42px 0 96px;
   align-items: start;
   position: relative;
+  transform:
+    perspective(1400px)
+    translate3d(var(--hero-shift-x), var(--hero-shift-y), 0)
+    rotateX(var(--hero-tilt-x))
+    rotateY(var(--hero-tilt-y))
+    scale(var(--hero-scale));
+  transform-origin: center center;
+  transition:
+    transform 300ms ease,
+    filter 300ms ease,
+    opacity 250ms ease;
+  filter: brightness(var(--hero-brightness)) saturate(var(--hero-saturate));
+  will-change: transform, filter;
 }
 
 .hero-stage {
   position: absolute;
   inset: 10px -20px 0 -20px;
   pointer-events: none;
+  overflow: hidden;
 }
 
 .hero-aura {
   position: absolute;
   border-radius: 50%;
   filter: blur(42px);
+  transition: transform 400ms ease, opacity 300ms ease, background 300ms ease;
 }
 
 .hero-aura-one {
@@ -285,9 +306,37 @@ body::after {
   background: rgba(255, 255, 255, 0.05);
 }
 
-.hero-copy {
-  position: relative;
-  z-index: 1;
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.08;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.65), transparent 72%);
+}
+
+.hero-beam {
+  position: absolute;
+  top: -12%;
+  left: -18%;
+  width: 48%;
+  height: 138%;
+  opacity: 0.22;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    rgba(75, 210, 0, 0) 28%,
+    rgba(75, 210, 0, 0.08) 38%,
+    rgba(195, 255, 160, 0.28) 50%,
+    rgba(75, 210, 0, 0.08) 62%,
+    rgba(75, 210, 0, 0) 72%,
+    transparent 100%
+  );
+  filter: blur(20px);
+  transform: rotate(12deg);
+  animation: hero-beam-drift 18s linear infinite;
 }
 
 .hero-layout {
@@ -310,7 +359,6 @@ body::after {
 
 .hero-nameplate span {
   display: block;
-  font-family: "Outfit", sans-serif;
   font-size: 1.05rem;
   font-weight: 700;
   line-height: 0.94;
@@ -323,6 +371,8 @@ body::after {
 }
 
 .hero-copy {
+  position: relative;
+  z-index: 1;
   padding-top: 64px;
   max-width: 760px;
   margin: 0;
@@ -342,32 +392,47 @@ body::after {
   color: rgba(246, 240, 242, 0.62);
   font-size: 0.86rem;
   font-weight: 400;
-  margin-bottom: 22px;
+  margin-bottom: 16px;
   letter-spacing: 0.16em;
 }
 
-.hero-kicker {
+.hero-status-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
   margin-bottom: 16px;
-  font-family: "Outfit", sans-serif;
+}
+
+.hero-kicker {
   font-size: 0.82rem;
   color: rgba(246, 240, 242, 0.8);
-  opacity: 1;
   letter-spacing: 0.08em;
   font-weight: 500;
+}
+
+.hero-state-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(193, 255, 160, 0.2);
+  background: rgba(75, 210, 0, 0.08);
+  color: rgba(215, 255, 191, 0.9);
+  font-size: 0.74rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 .hero-title {
   margin: 0;
   max-width: 720px;
-  font-family: "Outfit", sans-serif;
-  font-size: clamp(3.6rem, 7vw, 5.6rem);
+  font-size: clamp(3.4rem, 7vw, 5.6rem);
   line-height: 0.92;
   letter-spacing: -0.05em;
   color: #87e5ba;
-  -webkit-text-fill-color: #87e5ba;
-  -webkit-text-stroke: 0;
-  text-shadow:
-    0 10px 34px rgba(0, 0, 0, 0.22);
+  text-shadow: 0 10px 34px rgba(0, 0, 0, 0.22);
   text-transform: uppercase;
 }
 
@@ -383,8 +448,6 @@ body::after {
   white-space: nowrap;
   letter-spacing: -0.05em;
   color: #87e5ba;
-  -webkit-text-fill-color: #87e5ba;
-  -webkit-text-stroke: 0;
 }
 
 .hero-title-accent span {
@@ -394,8 +457,6 @@ body::after {
 .hero-title-tail {
   margin-left: 0.08em;
   color: #fff;
-  -webkit-text-fill-color: #fff;
-  -webkit-text-stroke: 0;
   opacity: 0.42;
 }
 
@@ -412,7 +473,6 @@ body::after {
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.7;
-  letter-spacing: 0;
   font-family: "Inter", "Outfit", sans-serif;
 }
 
@@ -443,19 +503,19 @@ body::after {
   display: inline-flex;
   align-items: center;
   gap: 14px;
-  padding: 16px 24px 16px 24px;
+  padding: 16px 24px;
   border-radius: 999px;
   background: linear-gradient(180deg, #baff92, #4bd200);
   color: #111216;
   text-decoration: none;
   text-transform: uppercase;
-  font-size: 1.22rem;
+  font-size: 1.16rem;
   font-weight: 800;
   letter-spacing: -0.04em;
   box-shadow:
     0 18px 32px rgba(0, 0, 0, 0.18),
     0 0 0 1px rgba(229, 255, 216, 0.3) inset;
-  transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+  transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease, background 180ms ease;
 }
 
 .hero-action:hover,
@@ -508,6 +568,7 @@ body::after {
   background: rgba(255, 255, 255, 0.04);
   color: rgba(246, 240, 242, 0.82);
   font-size: 0.92rem;
+  transition: transform 220ms ease, border-color 220ms ease, background-color 220ms ease;
 }
 
 .hero-aside {
@@ -521,6 +582,7 @@ body::after {
     0 24px 48px rgba(0, 0, 0, 0.18),
     0 0 0 1px rgba(255, 255, 255, 0.04) inset;
   backdrop-filter: blur(10px);
+  transition: transform 260ms ease, border-color 260ms ease, box-shadow 260ms ease;
 }
 
 .hero-aside-label {
@@ -556,6 +618,69 @@ body::after {
   padding-top: 10px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   color: rgba(246, 240, 242, 0.88);
+}
+
+.hero-section[data-state="idle"] {
+  --hero-brightness: 0.92;
+  --hero-saturate: 0.9;
+}
+
+.hero-section[data-state="idle"] .hero-aura-one {
+  background: rgba(255, 255, 255, 0.08);
+  opacity: 0.8;
+}
+
+.hero-section[data-state="idle"] .hero-aura-two {
+  background: rgba(75, 210, 0, 0.08);
+  opacity: 0.72;
+}
+
+.hero-section[data-state="idle"] .hero-state-pill {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(246, 240, 242, 0.78);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.hero-section[data-state="explore"] .hero-aura-one,
+.hero-section[data-state="explore"] .hero-aura-two {
+  transform: scale(1.08);
+}
+
+.hero-section[data-state="explore"] .hero-aside {
+  border-color: rgba(75, 210, 0, 0.18);
+  box-shadow:
+    0 28px 56px rgba(0, 0, 0, 0.22),
+    0 0 0 1px rgba(75, 210, 0, 0.08) inset,
+    0 0 26px rgba(75, 210, 0, 0.06);
+}
+
+.hero-section[data-state="intent"] {
+  --hero-brightness: 1.03;
+  --hero-saturate: 1.06;
+}
+
+.hero-section[data-state="intent"] .hero-action {
+  animation: pulse-glow 1.2s ease-in-out infinite alternate;
+}
+
+.hero-section[data-state="intent"] .hero-aside {
+  transform: translateY(-4px);
+  border-color: rgba(193, 255, 160, 0.24);
+  box-shadow:
+    0 30px 60px rgba(0, 0, 0, 0.24),
+    0 0 0 1px rgba(75, 210, 0, 0.12) inset,
+    0 0 30px rgba(75, 210, 0, 0.08);
+}
+
+.hero-section[data-mode="contact"] .hero-action {
+  background: linear-gradient(180deg, #d0ffaf, #79ef2d);
+}
+
+.hero-section[data-mode="contact"] .hero-metadata span:first-child,
+.hero-section[data-mode="services"] .hero-metadata span:first-child,
+.hero-section[data-mode="projects"] .hero-metadata span:first-child {
+  border-color: rgba(193, 255, 160, 0.2);
+  background: rgba(75, 210, 0, 0.1);
 }
 
 .content-section {
@@ -610,10 +735,7 @@ body::after {
   gap: 18px;
 }
 
-.about-section h2 {
-  color: var(--accent);
-}
-
+.about-section h2,
 #contact h2 {
   color: var(--accent);
 }
@@ -808,7 +930,6 @@ body::after {
 .service-card-index {
   margin: 0 0 14px;
   color: rgba(191, 255, 157, 0.72);
-  font-family: "Outfit", sans-serif;
   font-size: 0.74rem;
   letter-spacing: 0.18em;
   font-weight: 700;
@@ -1179,6 +1300,39 @@ body.project-lightbox-open .project-lightbox {
   }
 }
 
+@keyframes hero-beam-drift {
+  0% {
+    transform: translate3d(-12vw, 0, 0) rotate(12deg);
+    opacity: 0.14;
+  }
+
+  50% {
+    transform: translate3d(18vw, 0, 0) rotate(12deg);
+    opacity: 0.28;
+  }
+
+  100% {
+    transform: translate3d(36vw, 0, 0) rotate(12deg);
+    opacity: 0.1;
+  }
+}
+
+@keyframes pulse-glow {
+  from {
+    box-shadow:
+      0 18px 32px rgba(0, 0, 0, 0.18),
+      0 0 0 1px rgba(229, 255, 216, 0.3) inset,
+      0 0 0 rgba(75, 210, 0, 0.18);
+  }
+
+  to {
+    box-shadow:
+      0 24px 42px rgba(0, 0, 0, 0.24),
+      0 0 0 1px rgba(229, 255, 216, 0.42) inset,
+      0 0 34px rgba(75, 210, 0, 0.26);
+  }
+}
+
 @media (max-width: 980px) {
   .hero-nameplate {
     display: none;
@@ -1273,6 +1427,7 @@ body.project-lightbox-open .project-lightbox {
     font: inherit;
     font-size: 0;
     cursor: pointer;
+    position: relative;
   }
 
   .menu-close::before,
@@ -1338,6 +1493,7 @@ body.project-lightbox-open .project-lightbox {
   .hero-section {
     min-height: auto;
     padding-top: 12px;
+    transform: none;
   }
 
   .hero-stage {
@@ -1351,11 +1507,6 @@ body.project-lightbox-open .project-lightbox {
 
   .hero-copy {
     padding-top: 8px;
-  }
-
-  .hero-nameplate {
-    top: 18px;
-    left: 0;
   }
 
   .hero-aside {
@@ -1383,16 +1534,7 @@ body.project-lightbox-open .project-lightbox {
 
 @media (max-width: 640px) {
   .hero-title {
-    font-size: clamp(2.9rem, 14vw, 4.1rem);
-  }
-
-  .hero-nameplate span {
-    font-size: 0.92rem;
-    letter-spacing: 0.14em;
-  }
-
-  .hero-nameplate span:last-child {
-    margin-left: 12px;
+    font-size: clamp(2.8rem, 13vw, 4.1rem);
   }
 
   .hero-body {
@@ -1427,5 +1569,9 @@ body.project-lightbox-open .project-lightbox {
 
   .form-actions {
     align-items: stretch;
+  }
+
+  .hero-status-row {
+    gap: 8px;
   }
 }
