@@ -4,11 +4,17 @@ const navMenu = document.getElementById("primary-menu");
 const menuOverlay = document.querySelector(".menu-overlay");
 const menuClose = document.querySelector(".menu-close");
 
-const projectPreviewButtons = Array.from(document.querySelectorAll("[data-project-preview]"));
-const projectLightbox = document.querySelector(".project-lightbox");
-const projectLightboxImage = document.querySelector(".project-lightbox-image");
-const projectLightboxBackdrop = document.querySelector(".project-lightbox-backdrop");
-const projectLightboxClose = document.querySelector(".project-lightbox-close");
+const projectPreviewButtons = Array.from(document.querySelectorAll("[data-project-key]"));
+const portfolioDetail = document.getElementById("portfolio-detail");
+const portfolioDetailImage = document.getElementById("portfolio-detail-image");
+const portfolioDetailTag = document.getElementById("portfolio-detail-tag");
+const portfolioDetailTitle = document.getElementById("portfolio-detail-title");
+const portfolioDetailSummary = document.getElementById("portfolio-detail-summary");
+const portfolioDetailGoal = document.getElementById("portfolio-detail-goal");
+const portfolioDetailOutcome = document.getElementById("portfolio-detail-outcome");
+const portfolioDetailProcessIntro = document.getElementById("portfolio-detail-process-intro");
+const portfolioProcessSteps = document.getElementById("portfolio-process-steps");
+const portfolioDetailClose = document.getElementById("portfolio-detail-close");
 
 const serviceButtons = Array.from(document.querySelectorAll("[data-service]"));
 const serviceCards = Array.from(document.querySelectorAll("[data-service-card]"));
@@ -31,6 +37,8 @@ const heroMetadata = document.getElementById("hero-metadata");
 const heroAsideTitle = document.getElementById("hero-aside-title");
 const heroAsideCopy = document.getElementById("hero-aside-copy");
 const heroAsidePoints = document.getElementById("hero-aside-points");
+const parallaxSections = Array.from(document.querySelectorAll(".content-section"));
+const footer = document.querySelector(".site-footer");
 
 const sectionIds = navLinks
   .map((link) => link.getAttribute("href"))
@@ -40,6 +48,81 @@ const sectionIds = navLinks
 const sections = sectionIds
   .map((id) => document.getElementById(id))
   .filter(Boolean);
+
+const projectCaseStudies = {
+  "studio-noir": {
+    tag: "Photography Portfolio",
+    title: "Studio Noir",
+    image: "./project-studio-noir.png",
+    imageAlt: "Studio Noir project preview on a laptop screen",
+    summary:
+      "A portfolio concept for a black-and-white photography brand that needed a more gallery-like presence without losing clarity or navigation confidence.",
+    goal:
+      "Create a visual system that feels editorial and cinematic while still making it easy for visitors to move through featured work, service context, and booking intent.",
+    outcome:
+      "The final direction uses oversized type, stronger contrast, and cleaner framing to make the work feel premium, with a hierarchy that supports both mood and usability.",
+    processIntro:
+      "The UX process focused on balancing atmosphere with readability so the experience could feel elevated without turning into a purely visual poster.",
+    steps: [
+      {
+        title: "Discover",
+        copy:
+          "Reviewed the tone of luxury photo portfolios and identified the need for a gallery-like first impression that still kept navigation clear.",
+      },
+      {
+        title: "Define",
+        copy:
+          "Mapped the core user goal as quickly understanding the brand, viewing the work, and moving toward contact without friction.",
+      },
+      {
+        title: "Design",
+        copy:
+          "Built an editorial layout system with bold type, strong white space, and visual framing that gave the photography room to lead the experience.",
+      },
+      {
+        title: "Refine",
+        copy:
+          "Adjusted contrast, spacing, and CTA placement so the mood stayed dramatic while the interface remained easy to scan and trust.",
+      },
+    ],
+  },
+  "atlanta-legacy": {
+    tag: "Luxury Real Estate",
+    title: "Atlanta Legacy Properties",
+    image: "./project-atlanta-legacy.png",
+    imageAlt: "Atlanta Legacy Properties project preview on a laptop screen",
+    summary:
+      "A real-estate landing page concept designed to present listings and brand credibility with a more polished, high-trust visual language.",
+    goal:
+      "Improve the sense of sophistication and clarity so users could understand the offer quickly, browse featured homes, and feel confidence in the brand.",
+    outcome:
+      "The direction introduced more spacious composition, cleaner information framing, and stronger presentation of featured properties to support both brand tone and conversion.",
+    processIntro:
+      "The UX process centered on making the page feel premium while reducing noise in the browsing flow for high-intent visitors.",
+    steps: [
+      {
+        title: "Discover",
+        copy:
+          "Looked at how luxury property sites balance aspiration with fast access to listings, location context, and inquiry paths.",
+      },
+      {
+        title: "Define",
+        copy:
+          "Prioritized three things: strong first impression, easier content scanning, and a clear route from featured property browsing to direct inquiry.",
+      },
+      {
+        title: "Design",
+        copy:
+          "Used a more refined grid, cleaner card treatment, and elevated typography to support the brand without overwhelming the property content.",
+      },
+      {
+        title: "Refine",
+        copy:
+          "Tuned spacing, emphasis, and section ordering so high-value content surfaced earlier and the page felt calmer and more trustworthy.",
+      },
+    ],
+  },
+};
 
 function setActiveLink(id) {
   navLinks.forEach((link) => {
@@ -59,18 +142,111 @@ function setMenuOpen(isOpen) {
   menuToggle?.setAttribute("aria-expanded", String(isOpen));
 }
 
-function setProjectLightboxOpen(isOpen, src = "", alt = "") {
-  document.body.classList.toggle("project-lightbox-open", isOpen);
-  projectLightbox?.setAttribute("aria-hidden", String(!isOpen));
-
-  if (projectLightboxImage && isOpen) {
-    projectLightboxImage.src = src;
-    projectLightboxImage.alt = alt;
+function renderPortfolioProcessSteps(steps) {
+  if (!portfolioProcessSteps) {
+    return;
   }
 
-  if (projectLightboxImage && !isOpen) {
-    projectLightboxImage.src = "";
-    projectLightboxImage.alt = "";
+  portfolioProcessSteps.innerHTML = steps
+    .map(
+      (step) => `
+        <div class="portfolio-process-step">
+          <span class="portfolio-detail-label">${step.title}</span>
+          <p>${step.copy}</p>
+        </div>
+      `
+    )
+    .join("");
+}
+
+function openPortfolioDetail(projectKey) {
+  const project = projectCaseStudies[projectKey];
+  if (!project || !portfolioDetail) {
+    return;
+  }
+
+  portfolioDetail.hidden = false;
+
+  if (portfolioDetailImage) {
+    portfolioDetailImage.src = project.image;
+    portfolioDetailImage.alt = project.imageAlt;
+  }
+
+  if (portfolioDetailTag) {
+    portfolioDetailTag.textContent = project.tag;
+  }
+
+  if (portfolioDetailTitle) {
+    portfolioDetailTitle.textContent = project.title;
+  }
+
+  if (portfolioDetailSummary) {
+    portfolioDetailSummary.textContent = project.summary;
+  }
+
+  if (portfolioDetailGoal) {
+    portfolioDetailGoal.textContent = project.goal;
+  }
+
+  if (portfolioDetailOutcome) {
+    portfolioDetailOutcome.textContent = project.outcome;
+  }
+
+  if (portfolioDetailProcessIntro) {
+    portfolioDetailProcessIntro.textContent = project.processIntro;
+  }
+
+  renderPortfolioProcessSteps(project.steps);
+  portfolioDetail.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function closePortfolioDetail() {
+  if (!portfolioDetail) {
+    return;
+  }
+
+  portfolioDetail.hidden = true;
+}
+
+function clamp(value, min, max) {
+  return Math.min(Math.max(value, min), max);
+}
+
+function updateSectionParallax() {
+  const isDesktopLike = window.matchMedia("(min-width: 981px)").matches;
+  const heroFactor = isDesktopLike ? 0.11 : 0.065;
+  const heroSoftFactor = isDesktopLike ? 0.16 : 0.09;
+  const sectionFactor = isDesktopLike ? 0.085 : 0.05;
+  const footerFactor = isDesktopLike ? 0.06 : 0.04;
+  const heroClamp = isDesktopLike ? 48 : 28;
+  const heroSoftClamp = isDesktopLike ? 70 : 38;
+  const sectionClamp = isDesktopLike ? 38 : 22;
+  const footerClamp = isDesktopLike ? 28 : 18;
+
+  const viewportHeight = window.innerHeight;
+
+  if (hero) {
+    const rect = hero.getBoundingClientRect();
+    const heroCenter = rect.top + rect.height / 2;
+    const heroOffset = clamp(((viewportHeight * 0.5) - heroCenter) * heroFactor, -heroClamp, heroClamp);
+    const heroSoftOffset = clamp(((viewportHeight * 0.5) - heroCenter) * heroSoftFactor, -heroSoftClamp, heroSoftClamp);
+
+    hero.style.setProperty("--section-parallax-hero", `${heroOffset}px`);
+    hero.style.setProperty("--section-parallax-soft", `${heroSoftOffset}px`);
+  }
+
+  parallaxSections.forEach((section) => {
+    const rect = section.getBoundingClientRect();
+    const sectionCenter = rect.top + rect.height / 2;
+    const offset = clamp(((viewportHeight * 0.5) - sectionCenter) * sectionFactor, -sectionClamp, sectionClamp);
+    section.style.setProperty("--section-parallax", `${offset}px`);
+  });
+
+  if (footer) {
+    const rect = footer.getBoundingClientRect();
+    const footerCenter = rect.top + rect.height / 2;
+    const offset = clamp(((viewportHeight * 0.5) - footerCenter) * footerFactor, -footerClamp, footerClamp);
+    footer.style.setProperty("--footer-parallax", `${offset}px`);
   }
 }
 
@@ -100,29 +276,23 @@ menuClose?.addEventListener("click", () => {
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
     setMenuOpen(false);
-    setProjectLightboxOpen(false);
+    closePortfolioDetail();
   }
 });
 
 projectPreviewButtons.forEach((button) => {
   button.addEventListener("click", () => {
-    const src = button.dataset.projectPreview;
-    const alt = button.dataset.projectAlt ?? "";
-
-    if (!src) {
+    const projectKey = button.dataset.projectKey;
+    if (!projectKey) {
       return;
     }
 
-    setProjectLightboxOpen(true, src, alt);
+    openPortfolioDetail(projectKey);
   });
 });
 
-projectLightboxBackdrop?.addEventListener("click", () => {
-  setProjectLightboxOpen(false);
-});
-
-projectLightboxClose?.addEventListener("click", () => {
-  setProjectLightboxOpen(false);
+portfolioDetailClose?.addEventListener("click", () => {
+  closePortfolioDetail();
 });
 
 const observer = new IntersectionObserver(
@@ -558,6 +728,7 @@ document.addEventListener("keydown", () => {
 document.addEventListener("scroll", () => {
   markUserActive();
   updateHeroFromScroll();
+  updateSectionParallax();
 }, { passive: true });
 
 window.addEventListener("resize", () => {
@@ -572,6 +743,7 @@ window.addEventListener("resize", () => {
   }
 
   updateHeroFromScroll();
+  updateSectionParallax();
 });
 
 heroPrimaryAction?.addEventListener("mouseenter", () => {
@@ -637,3 +809,4 @@ const idleInterval = window.setInterval(() => {
 
 updateHeroFromScroll();
 applyHeroState("active");
+updateSectionParallax();
